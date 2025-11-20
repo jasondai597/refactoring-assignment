@@ -27,17 +27,8 @@ public class StatementPrinter {
                 + System.lineSeparator());
 
         for (Performance performance : invoice.getPerformances()) {
-            int rslt = 0;
-            switch (getPlay(performance).getType()) {
-                case "tragedy":
-                    rslt = getTragedyAmount(performance);
-                    break;
-                case "comedy":
-                    rslt = getComedyAmount(performance);
-                    break;
-                default:
-                    throw new RuntimeException(String.format("unknown type: %s", getPlay(performance).getType()));
-            }
+            final int rslt = getAmount(performance);
+
             result.append(String.format("  %s: %s (%s seats)%n",
                     getPlay(performance).getName(),
                     usd(rslt),
@@ -52,15 +43,28 @@ public class StatementPrinter {
         return result.toString();
     }
 
+    private int getAmount(Performance performance) {
+        final int result;
+
+        switch (getPlay(performance).getType()) {
+            case "tragedy":
+                result = getTragedyAmount(performance);
+                break;
+            case "comedy":
+                result = getComedyAmount(performance);
+                break;
+            default:
+                throw new RuntimeException("unknown type: "
+                        + getPlay(performance).getType());
+        }
+
+        return result;
+    }
+
     private int getTotalAmount() {
         int result = 0;
         for (Performance performance : invoice.getPerformances()) {
-            if ("tragedy".equals(getPlay(performance).getType())) {
-                result += getTragedyAmount(performance);
-            }
-            else {
-                result += getComedyAmount(performance);
-            }
+            result += getAmount(performance);
         }
         return result;
     }
