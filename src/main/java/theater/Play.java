@@ -1,7 +1,7 @@
 package theater;
 
 /**
- * Class representing generate a new Play.
+ * Class representing generate a new Play case.
  */
 public class Play {
 
