@@ -1,4 +1,5 @@
-d456a8a (HEAD -> main, origin/main, origin/HEAD) Task 1.2
+8e1b2c8 Task 2.1
+d456a8a Task 1.2
 b535fd7 fixed the checkstyle issues
 2b4f164 fixed tests for the not-for-credit tasks; parameter ordering and ensuring consistent line endings.
 ff5004e adding shortcut keys for Inline Variable (Re: Piazza question)
