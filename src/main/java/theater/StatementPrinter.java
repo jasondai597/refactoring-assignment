@@ -22,12 +22,11 @@ public class StatementPrinter {
      * @throws RuntimeException if one of the play types is not known
      */
     public String statement() {
-        int totalAmount = 0;
-        int volumeCredits = 0;
-        final StringBuilder result = new StringBuilder("Statement for " + invoice.getCustomer() + System.lineSeparator());
+        
+        final StringBuilder result = new StringBuilder("Statement for " + invoice.getCustomer()
+                + System.lineSeparator());
 
         for (Performance performance : invoice.getPerformances()) {
-
             int rslt = 0;
             switch (getPlay(performance).getType()) {
                 case "tragedy":
@@ -39,17 +38,39 @@ public class StatementPrinter {
                 default:
                     throw new RuntimeException(String.format("unknown type: %s", getPlay(performance).getType()));
             }
-
-            // add volume credits
-            volumeCredits += getVolumeCredits(performance);
-            // print line for this order
-            result.append(String.format("  %s: %s (%s seats)%n", getPlay(performance).getName(),
-                    usd(rslt), performance.getAudience()));
-            totalAmount += rslt;
+            result.append(String.format("  %s: %s (%s seats)%n",
+                    getPlay(performance).getName(),
+                    usd(rslt),
+                    performance.getAudience()));
         }
+
+        final int volumeCredits = getTotalVolumeCredits();
+        final int totalAmount = getTotalAmount();
+
         result.append(String.format("Amount owed is %s%n", usd(totalAmount)));
         result.append(String.format("You earned %s credits%n", volumeCredits));
         return result.toString();
+    }
+
+    private int getTotalAmount() {
+        int result = 0;
+        for (Performance performance : invoice.getPerformances()) {
+            if ("tragedy".equals(getPlay(performance).getType())) {
+                result += getTragedyAmount(performance);
+            }
+            else {
+                result += getComedyAmount(performance);
+            }
+        }
+        return result;
+    }
+
+    private int getTotalVolumeCredits() {
+        int result = 0;
+        for (Performance performance : invoice.getPerformances()) {
+            result += getVolumeCredits(performance);
+        }
+        return result;
     }
 
     private static String usd(int totalAmount) {
